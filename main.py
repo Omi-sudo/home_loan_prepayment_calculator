@@ -26,9 +26,9 @@ num_prepayments = st.number_input("🔁 Number of Prepayments", min_value=0, max
 prepayments = []
 for i in range(num_prepayments):
     st.subheader(f"🔹 Prepayment #{i+1}")
-    amount = st.number_input(f"💰 Amount for Prepayment #{i+1}", value=200000.0, step=10000.0)
-    month = st.number_input(f"📅 Month of Prepayment #{i+1} (1-12)", min_value=1, max_value=12, value=8 if i == 0 else 6)
-    year = st.number_input(f"📅 Year of Prepayment #{i+1}", value=2024 if i == 0 else 2025)
+    amount = st.number_input(f"💰 Amount for Prepayment #{i+1}", value=200000.0, step=10000.0, key=f"amount_{i}")
+    month = st.number_input(f"📅 Month of Prepayment #{i+1} (1-12)", min_value=1, max_value=12, value=8 if i == 0 else 6, key=f"month_{i}")
+    year = st.number_input(f"📅 Year of Prepayment #{i+1}", value=2024 if i == 0 else 2025, key=f"year_{i}")
     prepayments.append({
         "amount": amount,
         "date": datetime(int(year), int(month), 1)
@@ -55,10 +55,14 @@ if st.button("📊 Calculate Remaining Tenure"):
     last_payment_date = start_date
     total_months_paid = 0
 
-    for prepayment in prepayments:
+    for i, prepayment in enumerate(prepayments):
         months_between = (prepayment["date"].year - last_payment_date.year) * 12 + (prepayment["date"].month - last_payment_date.month)
         total_months_paid += months_between
         principal = remaining_principal(principal, monthly_interest_rate, emi, months_between)
+
+        # 📢 Show remaining principal before prepayment
+        st.info(f"💼 Remaining Principal *before* Prepayment #{i+1} on {prepayment['date'].strftime('%B %Y')}: ₹{principal:,.2f}")
+
         principal -= prepayment["amount"]
         last_payment_date = prepayment["date"]
 

@@ -60,10 +60,15 @@ if st.button("📊 Calculate Remaining Tenure"):
         total_months_paid += months_between
         principal = remaining_principal(principal, monthly_interest_rate, emi, months_between)
 
-        # 📢 Show remaining principal before prepayment
+        # 💼 Before prepayment
         st.info(f"💼 Remaining Principal *before* Prepayment #{i+1} on {prepayment['date'].strftime('%B %Y')}: ₹{principal:,.2f}")
 
+        # Subtract prepayment
         principal -= prepayment["amount"]
+
+        # 💼 After prepayment
+        st.success(f"🏷️ Remaining Principal *after* Prepayment #{i+1}: ₹{principal:,.2f}")
+
         last_payment_date = prepayment["date"]
 
     # Calculate new remaining tenure
